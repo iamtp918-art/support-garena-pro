@@ -38,19 +38,18 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // --- Middleware Configuration ---
-// [SỬA LỖI CSS/JS] Dùng process.cwd() thay vì __dirname để Vercel hiểu
-app.use(express.static(path.join(process.cwd())));
-
+// [SỬA LỖI VERCEL] Đã XÓA dòng app.use(express.static(...))
+// Vercel sẽ tự xử lý qua file vercel.json
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
 
 // --- API Endpoints ---
 
-// Bắt lỗi "Cannot GET /"
+// Bắt "Cannot GET /"
 // Phải bảo server gửi file index.html khi truy cập trang chủ
 app.get('/', (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'index.html')); // Cũng dùng process.cwd()
+    res.sendFile(path.join(process.cwd(), 'index.html')); // Dùng process.cwd()
 });
 
 /**
@@ -73,22 +72,30 @@ app.post('/verify-key', (req, res) => {
 /**
  * [POST] /submit-form
  */
-app.post('/submit-form', upload.single('attachment'), (req, res) => {
-    const textData = req.body; 
-    const fileData = req.file; 
+app.post('/submit-form', (req, res) => {
+    // Phải chạy multer upload ở đây
+    upload.single('attachment')(req, res, function (err) {
+        if (err) {
+            console.error("Lỗi Multer:", err);
+            return res.status(500).json({ success: false, message: "Lỗi upload file." });
+        }
+        
+        const textData = req.body; 
+        const fileData = req.file; 
 
-    console.log("=====================================");
-    console.log("🔥 YÊU CẦU HỖ TRỢ MỚI VỪA VỀ! 🔥");
-    console.log(textData);
-    if (fileData) console.log(`(File đã lưu tại: ${fileData.path})`);
-    console.log("=====================================");
+        console.log("=====================================");
+        console.log("🔥 YÊU CẦU HỖ TRỢ MỚI VỪA VỀ! 🔥");
+        console.log(textData);
+        if (fileData) console.log(`(File đã lưu tại: ${fileData.path})`);
+        console.log("=====================================");
 
-    sendTelegramNotification(textData, fileData)
-        .catch(err => {
-            console.error("[TELEGRAM ERROR]", err.message);
-        });
+        sendTelegramNotification(textData, fileData)
+            .catch(err => {
+                console.error("[TELEGRAM ERROR]", err.message);
+            });
 
-    res.json({ success: true, message: "Đã nhận được yêu cầu của bạn!" });
+        res.json({ success: true, message: "Đã nhận được yêu cầu của bạn!" });
+    });
 });
 
 // --- Telegram Service ---
@@ -97,7 +104,7 @@ app.post('/submit-form', upload.single('attachment'), (req, res) => {
  * Gửi thông báo đến Telegram
  */
 async function sendTelegramNotification(textData, fileData) {
-
+    
     const message = formatTelegramMessage(textData);
     const telegramApi = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
@@ -106,7 +113,7 @@ async function sendTelegramNotification(textData, fileData) {
             // --- Kịch bản 1: Gửi Ảnh + Caption ---
             const url = `${telegramApi}/sendPhoto`;
             const form = new FormData();
-
+            
             form.append('chat_id', TELEGRAM_CHAT_ID);
             form.append('caption', message);
             form.append('parse_mode', 'HTML');
