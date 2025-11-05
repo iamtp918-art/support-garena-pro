@@ -2,7 +2,7 @@
  * Backend Server cho Ứng dụng Hỗ trợ Garena
  * @author Dev TanPhat (Professional Coder)
  * @date 2025-11-05
- * Đã sửa lỗi Vercel Read-Only & Cannot GET / & Lỗi Static CSS/JS
+ * Đã sửa lỗi Vercel Read-Only & Static Files (Final)
  */
 
 // --- Import Dependencies ---
@@ -38,19 +38,17 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // --- Middleware Configuration ---
-// [SỬA LỖI VERCEL] Đã XÓA dòng app.use(express.static(...))
-// Vercel sẽ tự xử lý qua file vercel.json
+// [SỬA LỖI VERCEL] Khôi phục express.static
+// Đây là cách chuẩn để phục vụ index.html, style.css, script.js
+app.use(express.static(path.join(process.cwd())));
+
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
 
 // --- API Endpoints ---
 
-// Bắt "Cannot GET /"
-// Phải bảo server gửi file index.html khi truy cập trang chủ
-app.get('/', (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'index.html')); // Dùng process.cwd()
-});
+// [ĐÃ XÓA] app.get('/') - Vì express.static đã tự động làm việc này
 
 /**
  * [POST] /verify-key
