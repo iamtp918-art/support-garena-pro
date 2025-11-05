@@ -2,10 +2,7 @@
  * Backend Server cho Ứng dụng Hỗ trợ Garena
  * @author Dev TanPhat (Professional Coder)
  * @date 2025-11-05
- * * Chức năng:
- * 1. Xác thực Key truy cập (POST /verify-key)
- * 2. Tiếp nhận Form hỗ trợ, upload file (POST /submit-form)
- * 3. Gửi thông báo đầy đủ qua Telegram (text & photo)
+ * Đã sửa lỗi Vercel Read-Only File System
  */
 
 // --- Import Dependencies ---
@@ -15,23 +12,25 @@ const multer = require('multer');
 const fs = require('fs');
 const axios = require('axios');
 const FormData = require('form-data');
-require('dotenv').config(); // [QUAN TRỌNG] Nạp các biến từ file .env
+require('dotenv').config();
 
 // --- Application Constants ---
 const app = express();
 const PORT = 3000;
-const UPLOAD_DIR = 'uploads';
+// [SỬA LỖI VERCEL] Dùng thư mục /tmp (thư mục duy nhất có thể ghi)
+const UPLOAD_DIR = '/tmp/uploads_tanphat';
 
 // --- Security & Bot Configuration ---
-// (Đọc từ file .env, không còn hard-code)
 const REAL_SECRET_KEY = process.env.REAL_SECRET_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 // --- Storage Engine (Multer) ---
+// Đảm bảo thư mục upload tạm tồn tại
 if (!fs.existsSync(UPLOAD_DIR)){
-    fs.mkdirSync(UPLOAD_DIR);
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true }); // Thêm recursive để tạo thư mục an toàn
 }
+// Cấu hình cách lưu file
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, UPLOAD_DIR + '/'),
     filename: (req, file, cb) => {
@@ -50,14 +49,12 @@ app.use(express.urlencoded({ extended: true }));
 
 /**
  * [POST] /verify-key
- * Xác thực Key truy cập của người dùng
  */
 app.post('/verify-key', (req, res) => {
     const { key } = req.body;
     if (!key) {
         return res.status(400).json({ success: false, message: "Không nhận được key." });
     }
-    // So sánh với Key đã nạp từ .env
     if (key === REAL_SECRET_KEY) {
         console.log(`[AUTH] Xác thực thành công!`);
         res.json({ success: true, message: "Xác thực thành công!" });
@@ -69,7 +66,6 @@ app.post('/verify-key', (req, res) => {
 
 /**
  * [POST] /submit-form
- * Tiếp nhận form hỗ trợ, upload file và kích hoạt thông báo Telegram.
  */
 app.post('/submit-form', upload.single('attachment'), (req, res) => {
     const textData = req.body; 
@@ -93,9 +89,7 @@ app.post('/submit-form', upload.single('attachment'), (req, res) => {
 // --- Telegram Service ---
 
 /**
- * Gửi thông báo đến Telegram, bao gồm cả hình ảnh (nếu có).
- * @param {object} textData Dữ liệu text từ form (req.body)
- * @param {object} fileData Dữ liệu file từ multer (req.file)
+ * Gửi thông báo đến Telegram
  */
 async function sendTelegramNotification(textData, fileData) {
     
@@ -111,12 +105,17 @@ async function sendTelegramNotification(textData, fileData) {
             form.append('chat_id', TELEGRAM_CHAT_ID);
             form.append('caption', message);
             form.append('parse_mode', 'HTML');
-            form.append('photo', fs.createReadStream(fileData.path));
+            form.append('photo', fs.createReadStream(fileData.path)); // Đọc file ảnh từ /tmp
 
             await axios.post(url, form, {
                 headers: form.getHeaders()
             });
             console.log("[TELEGRAM] Gửi ảnh và thông báo thành công!");
+
+            // [QUAN TRỌNG] Xóa file tạm sau khi gửi
+            fs.unlink(fileData.path, (err) => {
+                if (err) console.error("Không xóa được file tạm:", err);
+            });
 
         } else {
             // --- Kịch bản 2: Chỉ gửi Text ---
@@ -139,12 +138,11 @@ async function sendTelegramNotification(textData, fileData) {
 }
 
 /**
- * Định dạng nội dung tin nhắn Telegram từ dữ liệu form.
- * @param {object} data Dữ liệu text (req.body)
- * @returns {string} Tin nhắn đã định dạng HTML
+ * Định dạng nội dung tin nhắn Telegram
  */
 function formatTelegramMessage(data) {
-    const f = (field) => data[field] || '';
+    // [SỬA LỖI] Kiểm tra data tồn tại
+    const f = (field) => (data && data[field]) ? data[field] : '';
 
     let msg = `<b>🔥 Yêu cầu Hỗ trợ Mới - Dev TanPhat 🔥</b>\n\n`;
     msg += `<b>Tên đăng nhập Garena:</b> <pre>${f('garena-id')}</pre>\n`;
@@ -173,7 +171,6 @@ function formatTelegramMessage(data) {
 
 
 // --- Server Initialization ---
-app.listen(PORT, () => {
-    console.log(`Máy chủ "Support Garena Dev TanPhat" đang chạy tại http://localhost:${PORT}`);
-    console.log(`Thư mục lưu file upload: ${path.join(__dirname, UPLOAD_DIR)}`);
-});
+// Vercel sẽ tự động lắng nghe, không cần app.listen() ở đây
+// XUẤT app cho Vercel chạy
+module.exports = app;
