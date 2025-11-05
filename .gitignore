@@ -1,0 +1,8 @@
+# File này chứa các key bí mật, không bao giờ được up lên
+.env
+
+# Thư mục chứa các thư viện (rất lớn, không up)
+/node_modules
+
+# Thư mục chứa file của khách hàng upload (thông tin cá nhân)
+/uploads
