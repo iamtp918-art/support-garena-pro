@@ -2,7 +2,7 @@
  * Backend Server cho Ứng dụng Hỗ trợ Garena
  * @author Dev TanPhat (Professional Coder)
  * @date 2025-11-05
- * Đã sửa lỗi Vercel Read-Only & Static Files (Final V8.0)
+ * V10.0 - Them Log de kiem tra Environment Variables
  */
 
 // --- Import Dependencies ---
@@ -38,25 +38,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // --- Middleware Configuration ---
-// [SỬA LỖI VERCEL] Xóa app.use(express.static(...))
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
 
 // --- API Endpoints ---
 
-// [SỬA LỖI] Xử lý thủ công CÁC FILE TĨNH (HTML, CSS, JS)
-// 1. Gửi file index.html khi truy cập trang chủ
+// Xử lý thủ công CÁC FILE TĨNH (HTML, CSS, JS)
 app.get('/', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'index.html'));
 });
-
-// 2. Gửi file style.css
 app.get('/style.css', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'style.css'));
 });
-
-// 3. Gửi file script.js
 app.get('/script.js', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'script.js'));
 });
@@ -81,10 +75,11 @@ app.post('/verify-key', (req, res) => {
 
 /**
  * [POST] /submit-form
+ * [NÂNG CẤP] Bắt lỗi Telegram
  */
 app.post('/submit-form', (req, res) => {
     // Phải chạy multer upload ở đây
-    upload.single('attachment')(req, res, function (err) {
+    upload.single('attachment')(req, res, async function (err) { // Thêm async
         if (err) {
             console.error("Lỗi Multer:", err);
             return res.status(500).json({ success: false, message: "Lỗi upload file." });
@@ -93,18 +88,31 @@ app.post('/submit-form', (req, res) => {
         const textData = req.body; 
         const fileData = req.file; 
 
+        // [SỬA LỖI V10.0] Thêm 1 dòng log để kiểm tra
+        console.log(`[V10.0 CHECK] Kiem tra Key: ${process.env.TELEGRAM_BOT_TOKEN ? 'Co Token' : 'KHONG CO TOKEN'}`);
+        
         console.log("=====================================");
         console.log("🔥 YÊU CẦU HỖ TRỢ MỚI VỪA VỀ! 🔥");
         console.log(textData);
         if (fileData) console.log(`(File đã lưu tại: ${fileData.path})`);
         console.log("=====================================");
 
-        sendTelegramNotification(textData, fileData)
-            .catch(err => {
-                console.error("[TELEGRAM ERROR]", err.message);
-            });
+        try {
+            // [SỬA LỖI] Chờ (await) cho đến khi tele gửi xong
+            await sendTelegramNotification(textData, fileData);
+            
+            // Chỉ gửi thành công NẾU tele gửi thành công
+            res.json({ success: true, message: "Đã nhận được yêu cầu của bạn!" });
 
-        res.json({ success: true, message: "Đã nhận được yêu cầu của bạn!" });
+        } catch (teleError) {
+            // [SỬA LỖI] Nếu tele lỗi, báo lỗi cho client
+            console.error("[TELEGRAM ERROR]", teleError.message);
+            res.status(500).json({ 
+                success: false, 
+                // Báo lỗi cụ thể cho bạn
+                message: `Lỗi Gửi Telegram: ${teleError.message}. Vui lòng kiểm tra lại Key/Token.` 
+            });
+        }
     });
 });
 
@@ -112,6 +120,7 @@ app.post('/submit-form', (req, res) => {
 
 /**
  * Gửi thông báo đến Telegram
+ * [NÂNG CẤP] Ném lỗi (throw error) nếu thất bại
  */
 async function sendTelegramNotification(textData, fileData) {
     
@@ -149,11 +158,14 @@ async function sendTelegramNotification(textData, fileData) {
             console.log("[TELEGRAM] Gửi thông báo (text) thành công!");
         }
     } catch (error) {
+        // [SỬA LỖI] Ném lỗi ra để /submit-form bắt được
         console.error("[TELEGRAM ERROR] Không gửi được tin nhắn:");
         if (error.response && error.response.data) {
             console.error(error.response.data.description);
+            throw new Error(error.response.data.description); // Ném lỗi cụ thể
         } else {
             console.error(error.message);
+            throw error; // Ném lỗi chung
         }
     }
 }
