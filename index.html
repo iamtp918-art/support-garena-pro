@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="vi"> <head>
+<html lang="vi">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Hỗ Trợ Garena Chuyên Nghiệp - Tra Cứu Phiếu - Dev TanPhat</title>
-    <meta name="description" content="Nền tảng Support Garena (Dev TanPhat) cung cấp dịch vụ hỗ trợ, khôi phục tài khoản, change CMND Garena. Tra cứu trạng thái phiếu yêu cầu an toàn, chuyên nghiệp.">
-    <meta name="keywords" content="support garena, ho tro garena, dev tanphat, change cmnd garena, tra cuu phieu garena, dichvuchange.site">
+    <title>Bảo Trì Nâng Cấp - Hỗ Trợ Garena Dev TanPhat</title>
+    <meta name="description" content="Hệ thống Hỗ Trợ Garena (dichvuchange.site) đang được bảo trì và nâng cấp. Dự kiến hoàn thành trong 2 ngày. Mong quý khách thông cảm!">
     <meta name="author" content="Dev TanPhat">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta name="robots" content="noindex, nofollow"> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
     
@@ -15,190 +15,42 @@
 </head>
 <body>
 
-    <div class="login-container" id="login-container">
-        <div class="login-icon">
+    <div class="scanline-effect"></div>
+
+    <div class="maintenance-container" id="maintenance-container">
+        
+        <div class="maintenance-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.83-5.83M11.42 15.17l-4.25-4.25a2.652 2.652 0 0 1 0-3.75l4.25-4.25a2.652 2.652 0 0 1 3.75 0l4.25 4.25a2.652 2.652 0 0 1 0 3.75l-4.25 4.25a2.652 2.652 0 0 1-3.75 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 7.17 19.42l-4.25-4.25a1.5 1.5 0 0 1 0-2.12l4.25-4.25a1.5 1.5 0 0 1 2.12 0l4.25 4.25" />
             </svg>
         </div>
-        <h1>Chào mừng đến Support Garena</h1>
-        <p class="login-brand">Dev TanPhat</p>
+
+        <h1>Hệ Thống Đang Nâng Cấp</h1>
+        <p class="subtitle">Dịch vụ Hỗ Trợ Garena - Dev TanPhat đang được bảo trì để nâng cấp Database và Tốc độ.
+            Mong quý khách thông cảm và quay lại sau.</p>
         
-        <p class="login-prompt">Yêu cầu xác thực quyền truy cập</p>
-        <div class="input-group">
-            <input type="password" id="access-key" placeholder="••••••••••••••">
-            <button id="login-button">Xác thực</button>
-        </div>
-        <p id="error-message" class="error-message"></p>
-    </div>
-
-    <div class="main-container" id="main-container">
-        <header class="main-header">
-            <div class="header-overlay">
-                <h1>Support Garena</h1>
-                <p>Nền tảng hỗ trợ cao cấp - <span class="header-brand">Dev TanPhat</span></p>
+        <div class="countdown-timer" id="countdown">
+            <div class="time-block">
+                <span id="days">00</span>
+                <label>Ngày</label>
             </div>
-        </header>
+            <div class="time-block">
+                <span id="hours">00</span>
+                <label>Giờ</label>
+            </div>
+            <div class="time-block">
+                <span id="minutes">00</span>
+                <label>Phút</label>
+            </div>
+            <div class="time-block">
+                <span id="seconds">00</span>
+                <label>Giây</label>
+            </div>
+        </div>
 
-        <nav class="tabs-nav">
-            <button class="tab-button active" data-tab="form" id="tab-form">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3.5 4A1.5 1.5 0 0 0 2 5.5v9A1.5 1.5 0 0 0 3.5 16h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 16.5 4h-13Zm1 4.25a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75Z" /></svg>
-                Gửi Form Khôi Phục
-            </button>
-            <button class="tab-button" data-tab="lookup" id="tab-lookup">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" /></svg>
-                Tra Cứu Phiếu
-            </button>
-             <button class="tab-button" data-tab="cm" id="tab-cm">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z" clip-rule="evenodd" /></svg>
-                Hỗ trợ Change CM
-            </button>
-        </nav>
-
-        <main class="content-area">
-            <section class="tab-content active" id="content-form">
-                <h2>Gửi Form Khôi Phục Tài Khoản</h2>
-                <div class="important-note">
-                    <strong>Lưu ý quan trọng:</strong> Bạn đang gửi yêu cầu ở chế độ ẩn danh. Yêu cầu sẽ được xử lý nhưng bạn có thể không nhận được thông báo trực tiếp. Vui lòng viết tiếng Việt có dấu và điền đầy đủ thông tin để chúng tôi có thể hỗ trợ bạn tốt nhất.
-                </div>
-                <form id="recovery-form" class="recovery-form">
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="garena-id">Tên đăng nhập Garena *</label>
-                            <input type="text" id="garena-id" name="garena-id" required>
-                            <small>Tên tài khoản bạn dùng đăng nhập.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="date-lost">Ngày mất tài khoản *</label>
-                            <input type="date" id="date-lost" name="date-lost" required>
-                            <small>Ngày bạn phát hiện sự cố.</small>
-                        </div>
-                    </div>
-
-                    <h3 class="form-section-title">Thông tin xác thực gốc</h3>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="first-phone">SĐT đăng ký đầu tiên</label>
-                            <input type="tel" id="first-phone" name="first-phone">
-                            <small>SĐT đầu tiên liên kết với tài khoản.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="first-email">Email đăng ký đầu tiên</label>
-                            <input type="email" id="first-email" name="first-email">
-                            <small>Email đầu tiên liên kết với tài khoản.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="current-phone">SĐT hiện có trong tài khoản</label>
-                            <input type="text" id="current-phone" name="current-phone" placeholder="Không Có SĐT">
-                            <small>SĐT trước khi bị thay đổi.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="current-email">Email hiện có trong tài khoản</label>
-                            <input type="text" id="current-email" name="current-email" placeholder="Không Có Email">
-                            <small>Email trước khi bị thay đổi.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="account-cccd">Thông tin CCCD trong tài khoản *</label>
-                            <input type="text" id="account-cccd" name="account-cccd" required placeholder="không có CCCD">
-                            <small>Nếu không phải của bạn, ghi rõ.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="account-name">Họ và tên trong tài khoản *</label>
-                            <input type="text" id="account-name" name="account-name" required placeholder="không có Họ và Tên">
-                            <small>Nếu không phải của bạn, ghi rõ.</small>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="transactions">Thông tin Giao dịch nạp thẻ (3 giao dịch gần nhất) *</label>
-                        <textarea id="transactions" name="transactions" rows="4" required placeholder="Ví dụ: 1. Nạp Viettel, 50.000đ, 20/10/2025..."></textarea>
-                        <small>Cung cấp Hình thức nạp, mệnh giá, thời gian.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Mô tả chi tiết vấn đề của bạn *</label>
-                        <textarea id="description" name="description" rows="5" required></textarea>
-                        <small>Nhập mô tả chi tiết, rõ ràng về vấn đề bạn gặp phải.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="attachment">Hình ảnh đính kèm (Bằng chứng) *</label>
-                        <input type="file" id="attachment" name="attachment" accept="image/*" required class="file-input">
-                        <small>Tối đa 5MB. Ảnh chụp màn hình lỗi, giao dịch...</small>
-                    </div>
-                    
-                    <h3 class="form-section-title">Thông tin liên hệ (Của bạn)</h3>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="contact-name">Họ và tên của bạn *</label>
-                            <input type="text" id="contact-name" name="contact-name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contact-cccd">Số CCCD của bạn *</label>
-                            <input type="text" id="contact-cccd" name="contact-cccd" required>
-                            <small>Dùng để cập nhật vào tài khoản.</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contact-email">Địa chỉ Email liên hệ của bạn *</label>
-                            <input type="email" id="contact-email" name="contact-email" required>
-                            <small>Chúng tôi sẽ liên hệ qua Email này.</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contact-phone">Số điện thoại liên hệ của bạn *</label>
-                            <input type="tel" id="contact-phone" name="contact-phone" required>
-                            <small>Chúng tôi sẽ liên hệ qua SĐT này.</small>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn">Gửi Yêu Cầu Hỗ Trợ</button>
-                </form>
-            </section>
-
-            <section class="tab-content" id="content-lookup">
-                <h2>Tra Cứu Phiếu Yêu Cầu</h2>
-                <p class="section-description">Nhập mã hệ thống cung cấp (ví dụ: GNA-XXXXXX) để tra cứu yêu cầu.</p>
-                
-                <div class="lookup-box">
-                    <div class="form-group">
-                        <label for="lookup-id">Nhập mã tra cứu</label>
-                        <input type="text" id="lookup-id" placeholder="GNA-XXXXXX">
-                    </div>
-                    <button id="lookup-button" class="submit-btn">Tra Cứu</button>
-                </div>
-                
-                <div id="lookup-results-container">
-                    </div>
-            </section>
-
-            <section class="tab-content" id="content-cm">
-                <h2>Hỗ trợ Thay đổi Thông tin CMND/CCCD</h2>
-                <p>Dịch vụ này giúp bạn cập nhật hoặc thay đổi thông tin Chứng Minh Nhân Dân (CMND) hoặc Căn Cước Công Dân (CCCD) đã đăng ký trong tài khoản Garena của bạn.</p>
-                <p>Các trường hợp hỗ trợ:</p>
-                <ul>
-                    <li>Cập nhật từ CMND 9 số sang CCCD 12 số.</li>
-                    <li>Thông tin đăng ký ban đầu bị sai lệch (sai số, sai họ tên).</li>
-                    <li>Muốn thay đổi thông tin chủ sở hữu tài khoản (yêu cầu quy trình xác minh phức tạp và bằng chứng giao dịch).</li>
-                </ul>
-                <p>Để bắt đầu, vui lòng quay lại tab "Gửi Form Khôi Phục" và điền đầy đủ thông tin, ở phần "Mô tả chi tiết vấn đề", vui lòng ghi rõ "Yêu cầu hỗ trợ Change CM" và lý do chi tiết.</p>
-                
-                <div class="tech-image-placeholder">
-                    
-                </div>
-            </section>
-        </main>
-
-        <footer class="main-footer">
-            © 2025 Support Garena Premium Service - Dev TanPhat.
-        </footer>
+        <p class="brand-footer">© 2025 Dev TanPhat</p>
     </div>
-
-    <div id="toast-notification" class="toast"></div>
 
     <script src="script.js"></script>
 </body>
