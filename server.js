@@ -1,7 +1,7 @@
 /**
- * Backend Server V15.0 - Tích hợp MongoDB
+ * Backend Server V16.0 - Tích hợp MongoDB
  * @author Dev TanPhat
- * V15.0 - Ép Vercel deploy (triển khai) lại
+ * V16.0 - Ép Vercel deploy (triển khai) lại
  */
 
 // --- Import Dependencies ---
@@ -97,8 +97,8 @@ app.post('/submit-form', (req, res) => {
         const textData = req.body; 
         const fileData = req.file;
 
-        // V15.0 - Thêm log
-        console.log(`[V15.0 CHECK] Kiem tra Key: ${process.env.TELEGRAM_BOT_TOKEN ? 'Co Token' : 'KHONG CO TOKEN'}`);
+        // V16.0 - Thêm log
+        console.log(`[V16.0 CHECK] Kiem tra Key: ${process.env.TELEGRAM_BOT_TOKEN ? 'Co Token' : 'KHONG CO TOKEN'}`);
 
         try {
             // 1. Tạo Mã Tra Cứu (MỚI)
