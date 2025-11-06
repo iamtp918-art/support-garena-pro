@@ -1,11 +1,11 @@
 /**
- * Khởi chạy Ứng dụng Hỗ trợ và Hiệu ứng khi tài liệu được tải
+ * Khởi chạy Ứng dụng Hỗ trợ khi tài liệu được tải
  * @author Dev TanPhat (Professional Coder)
  * @date 2025-11-05
  */
 document.addEventListener('DOMContentLoaded', () => {
     SupportApp.init();
-    SakuraEffect.init();
+    // [ĐÃ XÓA] SakuraEffect.init();
 });
 
 /**
@@ -318,77 +318,5 @@ const SupportApp = {
             }
             return response.json();
         }
-    }
-};
-
-/**
- * @module SakuraEffect
- * Quản lý hiệu ứng hoa anh đào rơi trên Canvas.
- */
-const SakuraEffect = {
-    canvas: null,
-    ctx: null,
-    petals: [],
-    settings: {
-        numPetals: 30,
-        color: 'rgba(255, 192, 203, 0.3)'
-    },
-    init() {
-        try {
-            this.canvas = document.getElementById('sakura-canvas');
-            if (!this.canvas) return;
-            this.ctx = this.canvas.getContext('2d');
-            this.settings.color = getComputedStyle(document.documentElement).getPropertyValue('--sakura-color') || this.settings.color;
-            this.resizeCanvas();
-            this.createPetals();
-            this.animate();
-            window.addEventListener('resize', () => this.resizeCanvas());
-        } catch (e) {
-            console.error("Lỗi khởi tạo hiệu ứng Sakura:", e);
-        }
-    },
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    },
-    createPetals() {
-        this.petals = [];
-        for (let i = 0; i < this.settings.numPetals; i++) {
-            this.petals.push(this.createPetal());
-        }
-    },
-    createPetal() {
-        const x = Math.random() * this.canvas.width;
-        const y = (Math.random() * this.canvas.height * 2) - this.canvas.height;
-        const radius = Math.random() * 2 + 1;
-        const speedX = Math.random() * 2 - 1;
-        const speedY = Math.random() + 0.5;
-        return { x, y, radius, speedX, speedY, angle: 0 };
-    },
-    drawPetal(petal) {
-        this.ctx.beginPath();
-        this.ctx.fillStyle = this.settings.color;
-        this.ctx.arc(petal.x, petal.y, petal.radius, 0, Math.PI * 2);
-        this.ctx.fill();
-        this.ctx.closePath();
-    },
-    updatePetal(petal) {
-        petal.y += petal.speedY;
-        petal.x += petal.speedX;
-        petal.angle += 0.01;
-        petal.x += Math.sin(petal.angle) * 0.5;
-        if (petal.y > this.canvas.height) {
-            Object.assign(petal, this.createPetal(), { y: -5 });
-        }
-        if (petal.x > this.canvas.width) petal.x = 0;
-        if (petal.x < 0) petal.x = this.canvas.width;
-    },
-    animate() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.petals.forEach(petal => {
-            this.updatePetal(petal);
-            this.drawPetal(petal);
-        });
-        requestAnimationFrame(this.animate.bind(this));
     }
 };

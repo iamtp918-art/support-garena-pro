@@ -11,9 +11,6 @@
     --note-bg: rgba(0, 174, 255, 0.05);
     --note-border: rgba(0, 174, 255, 0.3);
     --shadow-glow: 0 0 25px rgba(0, 174, 255, 0.15);
-    
-    /* [MỚI] Màu hoa anh đào (hồng nhạt) */
-    --sakura-color: rgba(255, 192, 203, 0.3); 
 }
 
 /* --- THIẾT LẬP CƠ BẢN --- */
@@ -24,7 +21,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-deep-dark);
     color: var(--primary-text);
     line-height: 1.6;
@@ -33,19 +30,30 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 1rem;
-    overflow-x: hidden; /* Ngăn cuộn ngang */
+    overflow-x: hidden;
+    position: relative; /* [NÂNG CẤP] */
 }
 
-/* [MỚI] Canvas cho hiệu ứng hoa anh đào */
-#sakura-canvas {
+/* [NÂNG CẤP] Nền "Dot Grid" Công nghệ */
+body::before {
+    content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0; /* Nằm sau cùng */
-    pointer-events: none; /* Xuyên qua, không bắt click */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1; /* Nằm sau tất cả */
+    background-image: 
+        radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0);
+    background-size: 30px 30px;
+    animation: subtle-pan 60s linear infinite;
+    opacity: 0.5;
 }
+
+@keyframes subtle-pan {
+    0% { background-position: 0 0; }
+    100% { background-position: 600px 600px; }
+}
+
+/* [ĐÃ XÓA] CSS cho #sakura-canvas */
 
 /* --- PHẦN 1: MÀN HÌNH NHẬP KEY --- */
 .login-container {
@@ -56,14 +64,22 @@ body {
     max-width: 450px;
     width: 100%;
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-    z-index: 2; /* Nằm trên canvas */
-    position: relative; /* Cho z-index hoạt động */
+    z-index: 2;
+    position: relative;
 
-    /* [MỚI] Hiệu ứng viền phát sáng */
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 25px rgba(0, 174, 255, 0.1);
-    animation: pulse-border 5s infinite ease-out;
+    /* [NÂNG CẤP] Hiệu ứng Glow + Hover */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3), 
+                0 0 15px rgba(0, 174, 255, 0.1),
+                inset 0 0 10px rgba(0, 174, 255, 0.05);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
+.login-container:hover {
+     transform: translateY(-5px); /* Hiệu ứng nhấc lên */
+     box-shadow: 0 15px 60px rgba(0,0,0,0.5), 
+                 0 0 30px rgba(0, 174, 255, 0.25),
+                 inset 0 0 10px rgba(0, 174, 255, 0.05);
+}
+
 
 .login-icon {
     width: 60px;
@@ -144,7 +160,7 @@ body {
 .login-container button:hover {
     background: var(--accent-blue-hover);
     box-shadow: 0 0 20px rgba(0, 174, 255, 0.5);
-    transform: translateY(-2px); /* Hiệu ứng nhấc lên */
+    transform: translateY(-2px);
 }
 
 .error-message {
@@ -164,61 +180,59 @@ body {
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--border-color);
-    z-index: 2; /* Nằm trên canvas */
-    position: relative; /* Cho z-index hoạt động */
-
-    /* [MỚI] Hiệu ứng viền phát sáng */
-    box-shadow: 0 10px 50px rgba(0,0,0,0.5), 0 0 25px rgba(0, 174, 255, 0.1);
-    animation: pulse-border 5s infinite ease-out;
+    z-index: 2;
+    position: relative;
+    
+    /* [NÂNG CẤP] Hiệu ứng Glow + Hover */
+    box-shadow: 0 10px 50px rgba(0,0,0,0.5), 
+                0 0 15px rgba(0, 174, 255, 0.1),
+                inset 0 0 10px rgba(0, 174, 255, 0.05);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.main-container:hover {
+     transform: translateY(-5px);
+     box-shadow: 0 15px 60px rgba(0,0,0,0.7), 
+                 0 0 30px rgba(0, 174, 255, 0.25),
+                 inset 0 0 10px rgba(0, 174, 255, 0.05);
 }
 
-/* [MỚI] Animation viền phát sáng */
-@keyframes pulse-border {
-    0% { box-shadow: 0 10px 50px rgba(0,0,0,0.5), 0 0 25px rgba(0, 174, 255, 0.1); }
-    50% { box-shadow: 0 10px 50px rgba(0,0,0,0.5), 0 0 35px rgba(0, 174, 255, 0.3); }
-    100% { box-shadow: 0 10px 50px rgba(0,0,0,0.5), 0 0 25px rgba(0, 174, 255, 0.1); }
-}
-
-/* [MỚI] Header Banner với Gradient động */
+/* [NÂNG CẤP] Header Banner với Scan Line */
 .main-header {
     position: relative;
     padding: 4.5rem 2rem;
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-    overflow: hidden; /* Ẩn gradient thừa */
-    
-    /* Lưới công nghệ tĩnh */
     background-color: var(--bg-deep-dark);
+    /* Lưới công nghệ tĩnh */
     background-image: 
         linear-gradient(rgba(48, 58, 76, 0.5) 1px, transparent 1px),
         linear-gradient(90deg, rgba(48, 58, 76, 0.5) 1px, transparent 1px);
     background-size: 30px 30px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden; /* Quan trọng cho scan-line */
 }
 
-/* [MỚI] Lớp phủ Gradient động */
-.main-header::before {
+/* [NÂNG CẤP] Hiệu ứng Scan Line */
+.main-header::after {
     content: '';
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: linear-gradient(135deg, rgba(0, 174, 255, 0.2), rgba(10, 14, 26, 0.7), rgba(255, 192, 203, 0.1));
-    background-size: 200% 200%;
-    animation: gradient-flow 10s ease infinite;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue-hover), transparent);
+    box-shadow: 0 0 15px var(--accent-blue);
+    animation: scan-line 8s linear infinite;
 }
 
-@keyframes gradient-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+@keyframes scan-line {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
 
 .header-overlay {
     position: relative;
-    z-index: 2; /* Nằm trên lớp phủ gradient */
+    z-index: 2;
 }
 
 .main-header h1 {
@@ -238,7 +252,7 @@ body {
     font-weight: 500;
 }
 
-/* Tabs Navigation */
+/* [NÂNG CẤP] Tabs Navigation */
 .tabs-nav {
     display: flex;
     background-color: var(--bg-dark-card);
@@ -275,6 +289,9 @@ body {
     color: var(--accent-blue);
     font-weight: 700;
     border-bottom-color: var(--accent-blue);
+    /* [NÂNG CẤP] Thêm nền và bóng mờ khi active */
+    background-color: rgba(0, 174, 255, 0.05);
+    box-shadow: 0 -5px 10px -5px rgba(0, 174, 255, 0.1) inset;
 }
 
 /* Nội dung Tab */
@@ -303,7 +320,204 @@ body {
     padding-bottom: 1rem;
 }
 
-/* Tab Hỗ trợ CM */
+/* --- (Toàn bộ code CSS cho Form, Tab CM, Tra Cứu, Responsive... giữ nguyên) --- */
+/* ... (Giữ nguyên phần còn lại của CSS V11.0) ... */
+/* --- THIẾT KẾ FORM --- */
+.important-note {
+    background: var(--note-bg);
+    border: 1px solid var(--note-border);
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    color: #cceeff;
+}
+.important-note strong {
+    color: var(--accent-blue-hover);
+    font-weight: 700;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: var(--secondary-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-deep-dark);
+    color: var(--primary-text);
+    transition: all 0.3s ease;
+}
+.form-group input[type="date"] {
+    color-scheme: dark;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background-color: var(--bg-dark-card);
+    box-shadow: 0 0 0 3px rgba(0, 174, 255, 0.2);
+}
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+.form-group .file-input {
+    padding: 0;
+    border: 1px dashed var(--border-color);
+    background-color: var(--bg-deep-dark);
+}
+.form-group .file-input::file-selector-button {
+    background-color: var(--border-color);
+    color: var(--primary-text);
+    padding: 0.9rem 1rem;
+    border: none;
+    border-right: 1px solid var(--border-color);
+    margin-right: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.form-group .file-input:hover::file-selector-button {
+    background-color: var(--accent-blue);
+    color: var(--bg-deep-dark);
+}
+.form-group small {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+    margin-top: 0.75rem;
+}
+.form-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-text);
+    margin-top: 2.5rem;
+    margin-bottom: 2rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
+.submit-btn {
+    width: 100%;
+    padding: 1.15rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--bg-deep-dark);
+    background: var(--accent-blue);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.submit-btn:hover {
+    background: var(--accent-blue-hover);
+    box-shadow: 0 0 25px rgba(0, 174, 255, 0.5);
+    transform: translateY(-2px);
+}
+.submit-btn:disabled {
+    background: var(--secondary-text);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+/* --- CSS CHO TAB TRA CỨU --- */
+.section-description {
+    color: var(--secondary-text);
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+}
+.lookup-box {
+    background-color: var(--bg-deep-dark);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+}
+.lookup-box .form-group {
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+.lookup-box #lookup-id {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+.lookup-box .submit-btn {
+    width: auto;
+    flex-shrink: 0;
+    margin-top: 0;
+}
+#lookup-results-container {
+    margin-top: 2rem;
+}
+.lookup-result-box {
+    background-color: var(--bg-deep-dark);
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    animation: fadeIn 0.5s ease;
+}
+.lookup-result-box h3 {
+    font-size: 1.25rem;
+    color: var(--primary-text);
+    margin-bottom: 1rem;
+}
+.lookup-result-box p {
+    font-size: 1rem;
+    color: var(--secondary-text);
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+}
+.lookup-result-box strong {
+    color: var(--primary-text);
+    font-weight: 500;
+}
+.lookup-result-box .status-pending {
+    color: #ffc107;
+    font-weight: 700;
+}
+.lookup-result-box .status-done {
+    color: #28a745;
+    font-weight: 700;
+}
+.lookup-result-box.error {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.3);
+    color: var(--error-color);
+    font-weight: 500;
+}
+.lookup-result-box pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Inter', sans-serif;
+    color: var(--primary-text);
+}
+/* --- CSS CHO TAB CM --- */
 #content-cm p {
     margin-bottom: 1rem;
     font-size: 1.05rem;
@@ -331,142 +545,6 @@ body {
     color: var(--secondary-text);
     margin-top: 2rem;
 }
-
-
-/* --- THIẾT KẾ FORM --- */
-.important-note {
-    background: var(--note-bg);
-    border: 1px solid var(--note-border);
-    padding: 1.5rem;
-    border-radius: 10px;
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 2.5rem;
-    color: #cceeff;
-}
-.important-note strong {
-    color: var(--accent-blue-hover);
-    font-weight: 700;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 500;
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
-    color: var(--secondary-text);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="tel"],
-.form-group input[type="date"],
-.form-group textarea {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    font-size: 1rem;
-    font-family: 'Inter', sans-serif;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--bg-deep-dark);
-    color: var(--primary-text);
-    transition: all 0.3s ease;
-}
-.form-group input[type="date"] {
-    color-scheme: dark;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--accent-blue);
-    background-color: var(--bg-dark-card);
-    box-shadow: 0 0 0 3px rgba(0, 174, 255, 0.2);
-}
-
-.form-group textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-.form-group .file-input {
-    padding: 0;
-    border: 1px dashed var(--border-color);
-    background-color: var(--bg-deep-dark);
-}
-.form-group .file-input::file-selector-button {
-    background-color: var(--border-color);
-    color: var(--primary-text);
-    padding: 0.9rem 1rem;
-    border: none;
-    border-right: 1px solid var(--border-color);
-    margin-right: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.form-group .file-input:hover::file-selector-button {
-    background-color: var(--accent-blue);
-    color: var(--bg-deep-dark);
-}
-
-
-.form-group small {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--secondary-text);
-    margin-top: 0.75rem;
-}
-
-.form-section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-text);
-    margin-top: 2.5rem;
-    margin-bottom: 2rem;
-    border-top: 1px solid var(--border-color);
-    padding-top: 2rem;
-}
-
-.submit-btn {
-    width: 100%;
-    padding: 1.15rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--bg-deep-dark);
-    background: var(--accent-blue);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.submit-btn:hover {
-    background: var(--accent-blue-hover);
-    box-shadow: 0 0 25px rgba(0, 174, 255, 0.5);
-    transform: translateY(-2px);
-}
-.submit-btn:disabled {
-    background: var(--secondary-text);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
 /* --- FOOTER --- */
 .main-footer {
     text-align: center;
@@ -476,33 +554,6 @@ body {
     font-size: 0.9rem;
     border-top: 1px solid var(--border-color);
 }
-
-
-/* --- RESPONSIVE CHO DI ĐỘNG --- */
-@media (max-width: 768px) {
-    body {
-        padding: 0;
-    }
-    .login-container, .main-container {
-        width: 100%;
-        max-width: 100%;
-        min-height: 100vh;
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-    }
-    .login-container {
-        padding: 2.5rem 1.5rem;
-    }
-    .main-header { padding: 3.5rem 1rem; }
-    .main-header h1 { font-size: 2.2rem; }
-    .tabs-nav { overflow-x: auto; white-space: nowrap; padding: 0 1rem; }
-    .tab-button { padding: 1rem; font-size: 0.9rem; }
-    .content-area { padding: 2rem 1.5rem; }
-    .tab-content h2 { font-size: 1.6rem; }
-    .form-grid { grid-template-columns: 1fr; gap: 0; }
-}
-
 /* --- TOAST NOTIFICATION (HIỆN ĐẠI) --- */
 .toast {
     position: fixed;
@@ -529,82 +580,29 @@ body {
     color: var(--primary-text);
     box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4);
 }
-
-/* --- [MỚI] CSS CHO TAB TRA CỨU --- */
-.section-description {
-    color: var(--secondary-text);
-    margin-bottom: 2rem;
-    font-size: 1.05rem;
-}
-.lookup-box {
-    background-color: var(--bg-deep-dark);
-    padding: 2rem;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    display: flex;
-    gap: 1.5rem;
-    align-items: flex-end;
-}
-.lookup-box .form-group {
-    flex-grow: 1; /* Cho ô input chiếm hết */
-    margin-bottom: 0;
-}
-.lookup-box #lookup-id {
-    font-family: 'Roboto Mono', monospace;
-    font-size: 1.1rem;
-    text-transform: uppercase;
-}
-.lookup-box .submit-btn {
-    width: auto; /* Nút vừa vặn */
-    flex-shrink: 0;
-    margin-top: 0; /* Reset margin */
-}
-
-#lookup-results-container {
-    margin-top: 2rem;
-}
-.lookup-result-box {
-    background-color: var(--bg-deep-dark);
-    padding: 1.5rem 2rem;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    animation: fadeIn 0.5s ease;
-}
-.lookup-result-box h3 {
-    font-size: 1.25rem;
-    color: var(--primary-text);
-    margin-bottom: 1rem;
-}
-.lookup-result-box p {
-    font-size: 1rem;
-    color: var(--secondary-text);
-    margin-bottom: 0.5rem;
-    line-height: 1.7;
-}
-.lookup-result-box strong {
-    color: var(--primary-text);
-    font-weight: 500;
-}
-/* Trạng thái phiếu */
-.lookup-result-box .status-pending {
-    color: #ffc107; /* Màu vàng chờ */
-    font-weight: 700;
-}
-.lookup-result-box .status-done {
-    color: #28a745; /* Màu xanh lá hoàn thành */
-    font-weight: 700;
-}
-/* Hộp báo lỗi */
-.lookup-result-box.error {
-    background: rgba(255, 77, 77, 0.05);
-    border-color: rgba(255, 77, 77, 0.3);
-    color: var(--error-color);
-    font-weight: 500;
-}
-/* Hiển thị thẻ pre (mô tả) */
-.lookup-result-box pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-family: 'Inter', sans-serif;
-    color: var(--primary-text);
+/* --- RESPONSIVE CHO DI ĐỘNG --- */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+    }
+    .login-container, .main-container {
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+    }
+    .login-container {
+        padding: 2.5rem 1.5rem;
+    }
+    .main-header { padding: 3.5rem 1rem; }
+    .main-header h1 { font-size: 2.2rem; }
+    .tabs-nav { overflow-x: auto; white-space: nowrap; padding: 0 1rem; }
+    .tab-button { padding: 1rem; font-size: 0.9rem; }
+    .content-area { padding: 2rem 1.5rem; }
+    .tab-content h2 { font-size: 1.6rem; }
+    .form-grid { grid-template-columns: 1fr; gap: 0; }
+    .lookup-box { flex-direction: column; align-items: stretch; }
+    .lookup-box .submit-btn { width: 100%; }
 }
