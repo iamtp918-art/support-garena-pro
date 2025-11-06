@@ -1,7 +1,7 @@
 /**
- * Backend Server V14.0 - Tích hợp MongoDB
+ * Backend Server V15.0 - Tích hợp MongoDB
  * @author Dev TanPhat
- * V14.0 - Thêm thời gian gửi vào Telegram
+ * V15.0 - Ép Vercel deploy (triển khai) lại
  */
 
 // --- Import Dependencies ---
@@ -97,6 +97,9 @@ app.post('/submit-form', (req, res) => {
         const textData = req.body; 
         const fileData = req.file;
 
+        // V15.0 - Thêm log
+        console.log(`[V15.0 CHECK] Kiem tra Key: ${process.env.TELEGRAM_BOT_TOKEN ? 'Co Token' : 'KHONG CO TOKEN'}`);
+
         try {
             // 1. Tạo Mã Tra Cứu (MỚI)
             const translator = short();
@@ -121,7 +124,6 @@ app.post('/submit-form', (req, res) => {
                 contactEmail: textData['contact-email'],
                 contactPhone: textData['contact-phone'],
                 fileName: fileData ? fileData.filename : null
-                // createdAt: Tự động thêm
             });
 
             // 3. Lưu vào Database (MỚI)
