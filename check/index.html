@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Bộ Lọc Tài Khoản</title> <link rel="icon" href="https://i.postimg.cc/Y9HTHVnG/Screenshot-2025-11-12-224907.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">
+                                        <span>GARENA</span><span class="logo-pass">SUPPORT</span>
+                </a>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a href="#">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Trang chủ</span>
+                    </a>
+                </li>
+                
+                <li class="menu-header">CÔNG CỤ CỦA BẠN</li>
+                
+                <li class="menu-item active">
+                    <a href="#">
+                        <i class="fa-solid fa-filter"></i>
+                        <span>Bộ Lọc Tài Khoản</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="maintenance-trigger">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span>Garena Tool</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="maintenance-trigger">
+                        <i class="fa-solid fa-key"></i>
+                        <span>Authenticator</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="maintenance-trigger">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Check Đơn Hàng</span>
+                    </a>
+                </li>
+                
+                </ul>
+        </nav>
+        
+
+        <div class="main-content">
+            
+            <header class="top-bar">
+                <button class="mobile-nav-toggle" id="mobileNavToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="page-title">
+                    <h2><i class="fa-solid fa-filter"></i> Bộ Lọc Tài Khoản</h2>
+                </div>
+                <div class="user-info">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="user-profile">
+                        <span>Developer Trần Tấn Phát</span>
+                        <img src="https://i.postimg.cc/Y9HTHVnG/Screenshot-2025-11-12-224907.png" alt="Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-area">
+
+                <div class="alert-box warning">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <div class="alert-content">
+                        <h4>Lưu ý hệ thống:</h4>
+                        <p>Các công cụ tự động hoạt động 24/24</p>
+                        <p>Hệ thống không can thiệp vào tài khoản</p>
+                    </div>
+                </div>
+
+                <section class="input-section card">
+                    <h2><span class="icon"><i class="fa-solid fa-upload"></i></span>Nhập Dữ Liệu Cần Lọc</h2>
+                    <p>Tải lên tệp .txt hoặc dán trực tiếp nội dung vào ô bên dưới.</p>
+                    
+                    <div class="input-group">
+                        <label for="fileInput">Tải lên tệp .txt:</label>
+                        <input type="file" id="fileInput" accept=".txt">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="textInput">Hoặc dán nội dung vào đây:</label>
+                        <textarea id="textInput" rows="10" placeholder="Dán danh sách tài khoản của bạn tại đây..."></textarea>
+                    </div>
+                    
+                    <button id="filterButton" class="btn-primary">
+                        <span class="icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                        <span class="button-text">Bắt Đầu Lọc</span>
+                    </button>
+                </section>
+
+                <section class="output-section">
+                    <h2 class="section-title"><i class="fa-solid fa-list-ul"></i> Kết Quả Lọc</h2>
+                    
+                    <div class="output-grid">
+
+                        <div class="output-box card" id="output-cmnd-no">
+                            <div class="output-header">
+                                <h3>CHƯA LIÊN KẾT CMND</h3>
+                                <button class="btn-download" id="download-cmnd-no">Download</button>
+                            </div>
+                            <textarea id="result-cmnd-no" readonly placeholder="Kết quả lọc..."></textarea>
+                        </div>
+
+                        <div class="output-box card" id="output-cmnd-yes">
+                            <div class="output-header">
+                                <h3>ĐÃ LIÊN KẾT CMND</h3>
+                                <button class="btn-download" id="download-cmnd-yes">Download</button>
+                            </div>
+                            <textarea id="result-cmnd-yes" readonly placeholder="Kết quả lọc..."></textarea>
+                        </div>
+
+                        <div class="output-box card" id="output-tinh-anh">
+                            <div class="output-header">
+                                <h3>Rank TINH ANH</h3>
+                                <button class="btn-download" id="download-tinh-anh">Download</button>
+                            </div>
+                            <textarea id="result-tinh-anh" readonly placeholder="Kết quả lọc..."></textarea>
+                        </div>
+
+                        <div class="output-box card" id="output-cao-thu">
+                            <div class="output-header">
+                                <h3>Rank CAO THỦ</h3>
+                                <button class="btn-download" id="download-cao-thu">Download</button>
+                            </div>
+                            <textarea id="result-cao-thu" readonly placeholder="Kết quả lọc..."></textarea>
+                        </div>
+
+                        <div class="output-box card" id="output-sdt-no">
+                            <div class="output-header">
+                                <h3>CHƯA LIÊN KẾT SDT</h3>
+                                <button class="btn-download" id="download-sdt-no">Download</button>
+                            </div>
+                            <textarea id="result-sdt-no" readonly placeholder="Kết quả lọc..."></textarea>
+                        </div>
+
+                    </div>
+                </section>
+
+            </main>
+            
+            <footer>
+                <p>Thiết kế bởi <strong>Developer Trần Tấn Phát</strong></p>
+            </footer>
+
+        </div> </div> <div id="custom-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-icon">🔔</span>
+                <h3 id="modal-title">Thông báo hệ thống</h3>
+                <button class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message">Đây là nội dung của thông báo.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-ok-button" class="btn-primary">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
