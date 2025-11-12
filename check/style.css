@@ -1,0 +1,571 @@
+/* === GOOGLE FONT === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* === BIẾN MÀU (THEME SÁNG/TÍM) === */
+:root {
+    --primary-color: #6C5CE7; /* Màu tím/xanh chủ đạo */
+    --primary-light: #F0F0FF; /* Màu nền active của sidebar */
+    --dark-color: #333;
+    --text-color: #555;
+    --text-secondary: #888;
+    --border-color: #E0E0E0;
+    --bg-color-main: #F4F7FC; /* Nền xám nhạt của nội dung chính */
+    --bg-color-sidebar: #FFFFFF;
+    --bg-color-card: #FFFFFF;
+    --warning-bg: #FFFBE6; /* Nền vàng của thông báo */
+    --warning-border: #FFD58A;
+    --warning-text: #B98900;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    
+    --font-family: 'Inter', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color-main);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+button, input, textarea {
+    font-family: var(--font-family);
+}
+
+.card {
+    background: var(--bg-color-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    padding: 30px;
+}
+
+/* === CẤU TRÚC DASHBOARD CHÍNH === */
+.dashboard-container {
+    display: flex;
+}
+
+/* === SIDEBAR (THANH BÊN) === */
+.sidebar {
+    width: 260px;
+    background: var(--bg-color-sidebar);
+    border-right: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.sidebar-header .logo img {
+    height: 35px;
+    margin-right: 10px;
+}
+.sidebar-header .logo span {
+    color: #333;
+}
+.sidebar-header .logo .logo-pass {
+    color: var(--primary-color);
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.menu-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin: 20px 0 10px 10px;
+}
+
+.menu-item {
+    margin-bottom: 5px;
+}
+
+.menu-item a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.menu-item a i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.menu-item a:hover {
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+.menu-item a:hover i {
+    color: var(--primary-color);
+}
+
+/* Trạng thái "Active" của menu */
+.menu-item.active a {
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+.menu-item.active a i {
+    color: var(--primary-color);
+}
+
+/* === NỘI DUNG CHÍNH === */
+.main-content {
+    margin-left: 260px; /* Bằng độ rộng sidebar */
+    width: calc(100% - 260px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header trên cùng */
+.top-bar {
+    background: var(--bg-color-card);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 800;
+}
+
+.top-bar .page-title h2 {
+    font-size: 1.5rem;
+    color: var(--dark-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.top-bar .page-title i {
+    color: var(--primary-color);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.user-info .fa-bell {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+}
+.user-profile span {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* Khu vực nội dung (nơi chứa bộ lọc) */
+.content-area {
+    padding: 30px;
+    flex-grow: 1;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    color: var(--dark-color);
+    margin: 20px 0 20px;
+}
+
+/* Thông báo lưu ý (Giống ảnh) */
+.alert-box {
+    display: flex;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+.alert-box.warning {
+    background: var(--warning-bg);
+    border: 1px solid var(--warning-border);
+}
+.alert-box i {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    color: var(--warning-text);
+}
+.alert-box .alert-content h4 {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+.alert-box .alert-content p {
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+/* === GIAO DIỆN BỘ LỌC (THEME SÁNG) === */
+.input-section {
+    margin-bottom: 30px;
+}
+.input-section h2 {
+    color: var(--dark-color);
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+.input-section h2 .icon i {
+    color: var(--primary-color);
+    margin-right: 10px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+input[type="file"], textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: #FAFAFA;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+}
+textarea {
+    resize: vertical;
+}
+input[type="file"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Nút bấm (Theme sáng) */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 1rem;
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.btn-primary:hover {
+    background-color: #5a4acb;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+}
+
+.btn-download {
+    background-color: #F0F0FF;
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+}
+.btn-download:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* Khu vực kết quả */
+.output-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.output-box {
+    display: flex;
+    flex-direction: column;
+}
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.output-header h3 {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+.output-box textarea {
+    flex-grow: 1;
+    min-height: 200px;
+    background: #FAFAFA;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+footer strong {
+    color: var(--primary-color);
+}
+
+/* === NÚT LOADING (GIỮ NGUYÊN) === */
+.btn-primary.loading {
+    cursor: not-allowed;
+    background-color: #5a4acb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-primary.loading .icon,
+.btn-primary.loading .button-text {
+    opacity: 0;
+    width: 0;
+    margin: 0;
+}
+.spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+.btn-primary.loading .spinner {
+    display: inline-block;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* === MODAL POPUP (THEME SÁNG) === */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: #fff;
+    color: var(--text-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 450px;
+    transform: translateY(-50px);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.modal-overlay.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.modal-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.modal-icon {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-left: auto;
+    padding: 0;
+    line-height: 1;
+}
+.close-button:hover {
+    color: var(--dark-color);
+}
+
+.modal-body {
+    padding: 30px 25px;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.modal-footer {
+    padding: 20px 25px;
+    display: flex;
+    justify-content: flex-end;
+    background: #F9F9F9;
+    border-top: 1px solid var(--border-color);
+    border-radius: 0 0 12px 12px;
+}
+
+#modal-ok-button {
+    width: auto;
+    padding: 10px 30px;
+    font-size: 1rem;
+    margin-top: 0;
+    background: var(--primary-color);
+    color: #fff;
+}
+#modal-ok-button:hover {
+    background-color: #5a4acb;
+}
+/* ================================================== */
+/* === PHẦN RESPONSIVE CHO DI ĐỘNG (THÊM VÀO CUỐI) === */
+/* ================================================== */
+
+/* 1. Nút menu hamburger (chỉ hiện trên mobile) */
+.mobile-nav-toggle {
+    display: none; /* Mặc định ẩn trên PC */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+/* 2. Breakpoint (điểm gãy) chính: 992px trở xuống (Tablet và Mobile) */
+@media (max-width: 992px) {
+    
+    /* Ẩn sidebar ra bên trái màn hình */
+    .sidebar {
+        position: fixed; /* Phải là fixed để trượt ra */
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1000; /* Nằm trên cùng */
+        transform: translateX(-100%); /* Ẩn đi */
+        transition: transform 0.3s ease-out;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Lớp "mobile-open" (từ JS) sẽ cho sidebar trượt vào */
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    /* Dời main content ra 100% */
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* Cho nút hamburger hiện ra */
+    .mobile-nav-toggle {
+        display: block;
+    }
+
+    /* Ẩn bớt chữ "Chưa đăng nhập" cho gọn */
+    .top-bar .user-profile span {
+        display: none;
+    }
+
+    /* Ẩn logo "SIEUPROPASS" trên sidebar khi nó trượt ra */
+    .sidebar-header .logo {
+        display: none;
+    }
+}
+
+/* 3. Breakpoint (nhỏ hơn, 768px) cho điện thoại */
+@media (max-width: 768px) {
+    /* Chuyển 2 cột kết quả thành 1 cột */
+    .output-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Giảm padding cho vừa */
+    .content-area, .card {
+        padding: 20px;
+    }
+    
+    .top-bar {
+        padding: 15px;
+    }
+    
+    /* Cho chữ tiêu đề nhỏ lại */
+    .top-bar .page-title h2 {
+        font-size: 1.2rem;
+    }
+
+    /* Giảm cỡ chữ của thông báo */
+    .alert-box {
+        padding: 15px;
+    }
+    .alert-box .alert-content h4 {
+        font-size: 1rem;
+    }
+    .alert-box .alert-content p {
+        font-size: 0.85rem;
+    }
+}
