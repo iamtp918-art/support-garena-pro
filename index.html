@@ -3,53 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Developer Trần Tấn Phát">
+    <meta name="description" content="Hệ thống hỗ trợ Garena tự động - Powered by Dev TanPhat">
+    <title>Hỗ Trợ Garena | Hệ Sinh Thái Dev TanPhat</title>
     
-    <title>Bảo Trì Nâng Cấp - Hỗ Trợ Garena Dev TanPhat</title>
-    <meta name="description" content="Hệ thống Hỗ Trợ Garena (dichvuchange.site) đang được bảo trì và nâng cấp. Dự kiến hoàn thành trong 2 ngày. Mong quý khách thông cảm!">
-    <meta name="author" content="Dev TanPhat">
-    <meta name="robots" content="noindex, nofollow"> <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
-    <div class="scanline-effect"></div>
+    <div class="bg-grid-animate"></div>
 
-    <div class="maintenance-container" id="maintenance-container">
-        
-        <div class="maintenance-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.83-5.83M11.42 15.17l-4.25-4.25a2.652 2.652 0 0 1 0-3.75l4.25-4.25a2.652 2.652 0 0 1 3.75 0l4.25 4.25a2.652 2.652 0 0 1 0 3.75l-4.25 4.25a2.652 2.652 0 0 1-3.75 0Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 7.17 19.42l-4.25-4.25a1.5 1.5 0 0 1 0-2.12l4.25-4.25a1.5 1.5 0 0 1 2.12 0l4.25 4.25" />
-            </svg>
+    <div class="marquee-bar">
+        <div class="marquee-content">
+            <span><i class="fa-solid fa-bell"></i> Chào mừng đến với Hệ sinh thái <strong>Developer Trần Tấn Phát</strong></span>
+            <span class="divider">•</span>
+            <span><i class="fa-solid fa-bolt"></i> Dịch vụ Nạp Xu TikTok siêu tốc khuyến mãi 20%</span>
+            <span class="divider">•</span>
+            <span><i class="fa-solid fa-shield-halved"></i> Hệ thống hỗ trợ hoạt động 24/7</span>
         </div>
+    </div>
 
-        <h1>Hệ Thống Đang Nâng Cấp</h1>
-        <p class="subtitle">Dịch vụ Hỗ Trợ Garena - Dev TanPhat đang được bảo trì để nâng cấp Database và Tốc độ.
-            Mong quý khách thông cảm và quay lại sau.</p>
-        
-        <div class="countdown-timer" id="countdown">
-            <div class="time-block">
-                <span id="days">00</span>
-                <label>Ngày</label>
+    <header class="glass-header">
+        <div class="container header-flex">
+            <div class="brand">
+                <div class="brand-logo"><i class="fa-brands fa-react fa-spin"></i></div>
+                <div class="brand-text">
+                    <h2>GARENA SUPPORT</h2>
+                    <p>Powered by Dev TanPhat</p>
+                </div>
             </div>
-            <div class="time-block">
-                <span id="hours">00</span>
-                <label>Giờ</label>
-            </div>
-            <div class="time-block">
-                <span id="minutes">00</span>
-                <label>Phút</label>
-            </div>
-            <div class="time-block">
-                <span id="seconds">00</span>
-                <label>Giây</label>
+            <div class="header-actions">
+                <button id="langSwitch" class="btn-lang" title="Đổi ngôn ngữ">
+                    <img src="https://flagcdn.com/w40/vn.png" alt="VN" id="langIcon">
+                    <span id="langText">VN</span>
+                </button>
+                <a href="https://devtanphat.site" target="_blank" class="btn-outline">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
+                <a href="#" class="btn-primary-glow">Đăng nhập</a>
             </div>
         </div>
+    </header>
 
-        <p class="brand-footer">© 2025 Dev TanPhat</p>
+    <div class="container main-layout">
+        
+        <main class="content-col">
+            <div class="glass-panel main-form">
+                <div class="panel-header">
+                    <div class="header-icon pulse-red"><i class="fa-solid fa-headset"></i></div>
+                    <div>
+                        <h1 data-i18n="form_title">Gửi Yêu Cầu Hỗ Trợ</h1>
+                        <p data-i18n="form_desc">Điền thông tin bên dưới để AI xử lý tự động</p>
+                    </div>
+                </div>
+
+                <form id="supportForm" novalidate enctype="multipart/form-data">
+                    <div class="input-group">
+                        <label data-i18n="label_username">Tên đăng nhập Garena <span class="req">*</span></label>
+                        <div class="field-wrap">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" name="garena-id" id="inp_username" placeholder="Nhập username...">
+                            <span class="error-msg"></span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label data-i18n="label_date">Ngày phát hiện lỗi <span class="req">*</span></label>
+                        <div class="field-wrap">
+                            <i class="fa-regular fa-calendar"></i>
+                            <input type="date" name="date-lost" id="inp_date">
+                            <span class="error-msg"></span>
+                        </div>
+                    </div>
+
+                    <div class="separator"><span data-i18n="sep_verify">THÔNG TIN XÁC MINH</span></div>
+
+                    <div class="row">
+                        <div class="input-group">
+                            <label data-i18n="label_phone1">SĐT Đăng ký đầu</label>
+                            <input type="text" name="first-phone" class="simple-input" placeholder="09xxx...">
+                        </div>
+                        <div class="input-group">
+                            <label data-i18n="label_email1">Email Đăng ký đầu</label>
+                            <input type="email" name="first-email" class="simple-input" placeholder="abc@gmail...">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="input-group">
+                            <label>CMND/CCCD</label>
+                            <input type="text" name="account-cccd" class="simple-input">
+                        </div>
+                        <div class="input-group">
+                            <label data-i18n="label_realname">Họ tên thật</label>
+                            <input type="text" name="account-name" class="simple-input" style="text-transform: uppercase">
+                        </div>
+                    </div>
+
+                    <div class="separator"><span data-i18n="sep_contact">LIÊN HỆ & MÔ TẢ</span></div>
+
+                    <div class="row">
+                        <div class="input-group">
+                            <label data-i18n="label_contact_name">Người gửi <span class="req">*</span></label>
+                            <input type="text" name="contact-name" id="inp_cname" class="simple-input">
+                            <span class="error-msg"></span>
+                        </div>
+                        <div class="input-group">
+                            <label data-i18n="label_contact_phone">SĐT Liên hệ <span class="req">*</span></label>
+                            <input type="text" name="contact-phone" id="inp_cphone" class="simple-input">
+                            <span class="error-msg"></span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Email nhận kết quả <span class="req">*</span></label>
+                        <input type="email" name="contact-email" id="inp_cemail" class="simple-input">
+                        <span class="error-msg"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label data-i18n="label_desc">Chi tiết vấn đề</label>
+                        <textarea name="description" rows="3" placeholder="Mô tả..."></textarea>
+                    </div>
+
+                    <div class="upload-area" id="dropZone">
+                        <input type="file" name="attachment" id="fileUpload" accept="image/*">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span id="fileName" data-i18n="upload_text">Tải ảnh minh chứng (Kéo thả hoặc Click)</span>
+                    </div>
+
+                    <div class="captcha-box">
+                        <div class="g-recaptcha" data-sitekey="6LeG3BUsAAAAAM4GALgipRwYOWqvxUgvnIbZEHOI"></div>
+                    </div>
+
+                    <button type="submit" class="btn-submit-pro" id="submitBtn">
+                        <span data-i18n="btn_submit">GỬI YÊU CẦU NGAY</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <aside class="sidebar-col">
+            <div class="glass-panel profile-card">
+                <div class="dev-avatar">
+                    <img src="https://sf-static.upanhlaylink.com/img/image_20251123a00c9ea64f53790716115e3ece9c0749.jpg" alt="Dev TanPhat">
+                    <div class="status-dot"></div>
+                </div>
+                <h3>Developer Trần Tấn Phát</h3>
+                <p class="role-badge">Fullstack Developer</p>
+                <a href="https://devtanphat.site" target="_blank" class="btn-visit">
+                    Truy cập Portfolio <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="glass-panel links-card">
+                <h4><i class="fa-solid fa-layer-group"></i> TIỆN ÍCH MỞ RỘNG</h4>
+                
+                <a href="https://devtanphat.site/napxu" target="_blank" class="link-item tiktok-bg">
+                    <div class="icon-box"><i class="fa-brands fa-tiktok"></i></div>
+                    <div class="link-info">
+                        <strong>Nạp Xu TikTok</strong>
+                        <span>Giá rẻ - Tốc độ - Uy tín</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+
+                <a href="https://devtanphat.site/check" target="_blank" class="link-item tool-bg">
+                    <div class="icon-box"><i class="fa-solid fa-filter"></i></div>
+                    <div class="link-info">
+                        <strong>Bộ Lọc Data</strong>
+                        <span>Tool Check/Filter Siêu Tốc</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+
+            <div class="glass-panel game-support">
+                <h4>Hỗ trợ Game</h4>
+                <div class="game-grid">
+                    <div class="game-thumb"><img src="https://sf-static.upanhlaylink.com/img/image_20251123c6530540e2f73dba214d901b3505f536.jpg"></div>
+                    <div class="game-thumb"><img src="https://sf-static.upanhlaylink.com/img/image_20251123c6530540e2f73dba214d901b3505f536.jpg"></div>
+                    <div class="game-thumb"><img src="https://sf-static.upanhlaylink.com/img/image_20251123c6530540e2f73dba214d901b3505f536.jpg"></div>
+                </div>
+            </div>
+
+            <div class="mini-footer">
+                <p>© 2025 Dev TanPhat Ecosystem</p>
+                <p class="tele"><i class="fa-brands fa-telegram"></i> @useriamtp</p>
+            </div>
+        </aside>
+    </div>
+
+    <div id="welcomeModal" class="modal-overlay">
+        <div class="modal-box welcome-style">
+            <div class="welcome-header">
+                <i class="fa-solid fa-bell"></i>
+                <span data-i18n="welcome_head">Thông báo</span>
+                <button onclick="closeWelcome()" class="close-welcome">&times;</button>
+            </div>
+            <div class="welcome-body">
+                <h2 data-i18n="welcome_title">Chào mừng bạn đến với Dịch vụ Hỗ trợ!</h2>
+                <p data-i18n="welcome_msg">Đây là hệ thống hỗ trợ Garena tự động của <strong>Developer Trần Tấn Phát</strong>. Chúc bạn một ngày làm việc hiệu quả và có trải nghiệm mượt mà!</p>
+            </div>
+            <div class="welcome-footer">
+                <button class="btn-grey" onclick="closeWelcome24h()" data-i18n="btn_off24h"><i class="fa-solid fa-bell-slash"></i> Tắt 24h</button>
+                <button class="btn-red" onclick="closeWelcome()" data-i18n="btn_understood"><i class="fa-solid fa-check"></i> Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="techModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-body">
+                <div class="modal-icon" id="modalIcon"></div>
+                <p id="modalMsg">Nội dung</p>
+                <div id="ticketArea" class="hidden">
+                    <div class="ticket-wrapper">
+                        <span>MÃ PHIẾU:</span>
+                        <strong id="ticketCode">GNA-XXX</strong>
+                        <button onclick="copyTicket()"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+                <button class="btn-close-modal" onclick="closeModal()">OK</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
